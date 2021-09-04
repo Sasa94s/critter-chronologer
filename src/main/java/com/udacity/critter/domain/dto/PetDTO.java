@@ -1,7 +1,5 @@
 package com.udacity.critter.domain.dto;
 
-import com.udacity.critter.domain.enums.PetType;
-
 import java.time.LocalDate;
 
 /**
@@ -10,17 +8,17 @@ import java.time.LocalDate;
  */
 public class PetDTO {
     private long id;
-    private PetType type;
+    private String type;
     private String name;
     private long ownerId;
     private LocalDate birthDate;
     private String notes;
 
-    public PetType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(PetType type) {
+    public void setType(String type) {
         this.type = type;
     }
 

@@ -3,6 +3,7 @@ package com.udacity.critter.controller;
 import com.udacity.critter.domain.dto.CustomerDTO;
 import com.udacity.critter.domain.dto.EmployeeDTO;
 import com.udacity.critter.domain.dto.EmployeeRequestDTO;
+import com.udacity.critter.service.CustomerService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
@@ -11,7 +12,7 @@ import java.util.Set;
 
 /**
  * Handles web requests related to Users.
- *
+ * <p>
  * Includes requests for both customers and employees. Splitting this into separate user and customer controllers
  * would be fine too, though that is not part of the required scope for this class.
  */
@@ -19,19 +20,25 @@ import java.util.Set;
 @RequestMapping("/user")
 public class UserController {
 
+    private final CustomerService service;
+
+    public UserController(CustomerService service) {
+        this.service = service;
+    }
+
     @PostMapping("/customer")
-    public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO){
-        throw new UnsupportedOperationException();
+    public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
+        return service.create(customerDTO);
     }
 
     @GetMapping("/customer")
-    public List<CustomerDTO> getAllCustomers(){
-        throw new UnsupportedOperationException();
+    public List<CustomerDTO> getAllCustomers() {
+        return service.getAll();
     }
 
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@PathVariable long petId){
-        throw new UnsupportedOperationException();
+        return service.getByPetId(petId);
     }
 
     @PostMapping("/employee")

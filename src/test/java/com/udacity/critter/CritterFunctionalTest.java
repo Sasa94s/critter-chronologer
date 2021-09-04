@@ -7,7 +7,6 @@ import com.udacity.critter.controller.ScheduleController;
 import com.udacity.critter.controller.UserController;
 import com.udacity.critter.domain.dto.*;
 import com.udacity.critter.domain.enums.EmployeeSkill;
-import com.udacity.critter.domain.enums.PetType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +94,7 @@ public class CritterFunctionalTest {
         PetDTO petDTO = createPetDTO();
         petDTO.setOwnerId(newCustomer.getId());
         PetDTO newPet = petController.savePet(petDTO);
-        petDTO.setType(PetType.DOG);
+        petDTO.setType("DOG");
         petDTO.setName("DogName");
         PetDTO newPet2 = petController.savePet(petDTO);
 
@@ -257,7 +256,7 @@ public class CritterFunctionalTest {
     private static PetDTO createPetDTO() {
         PetDTO petDTO = new PetDTO();
         petDTO.setName("TestPet");
-        petDTO.setType(PetType.CAT);
+        petDTO.setType("CAT");
         return petDTO;
     }
 

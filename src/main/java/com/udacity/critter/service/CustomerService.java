@@ -1,0 +1,71 @@
+package com.udacity.critter.service;
+
+import com.udacity.critter.domain.dto.CustomerDTO;
+import com.udacity.critter.domain.entity.Customer;
+import com.udacity.critter.exception.AlreadyExistsException;
+import com.udacity.critter.exception.NotFoundException;
+import com.udacity.critter.repository.CustomerRepository;
+import com.udacity.critter.repository.PetRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class CustomerService extends UserService<Customer, CustomerDTO, CustomerRepository> {
+
+    private final ModelMapper mapper;
+    private final PetRepository petRepository;
+
+    public CustomerService(
+            ModelMapper mapper,
+            CustomerRepository repository,
+            PetRepository petRepository
+    ) {
+        super(repository);
+        this.mapper = mapper;
+        this.petRepository = petRepository;
+    }
+
+    @Override
+    public void validateForCreate(CustomerDTO customerDTO) {
+        super.validateForCreate(customerDTO);
+        customerDTO.getPetIds()
+                .forEach(petId -> {
+                    long count = petRepository.countById(petId);
+                    if (count != 1) {
+                        throw new NotFoundException(String.format("Pet ID %d does not exist", petId));
+                    }
+                });
+        customerDTO.getPetIds()
+                .forEach(petId -> {
+                    long count = repository.countByPetId(petId);
+                    if (count != 0) {
+                        throw new AlreadyExistsException(String.format("Pet ID %d already owned by a Customer", petId));
+                    }
+                });
+    }
+
+    public CustomerDTO create(CustomerDTO customerDTO) {
+        validateForCreate(customerDTO);
+        Customer customer = mapper.map(customerDTO, Customer.class);
+        repository.save(customer);
+
+        return customerDTO;
+    }
+
+    public List<CustomerDTO> getAll() {
+        List<Customer> customers = repository.findAll();
+
+        return customers.stream()
+                .map(customer -> mapper.map(customer, CustomerDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public CustomerDTO getByPetId(long petId) {
+        Customer owner = repository.getByPetId(petId);
+
+        return mapper.map(owner, CustomerDTO.class);
+    }
+}
