@@ -24,8 +24,9 @@ public class Event {
     private LocalTime end;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "Activity", joinColumns = @JoinColumn(name = "id"))
+    @CollectionTable(name = "Activity", joinColumns = @JoinColumn(name = "event_id"))
     @Enumerated(EnumType.STRING)
+    @Column(name = "activity")
     private Set<EmployeeSkill> activities;
 
     @OneToMany(mappedBy = "event")

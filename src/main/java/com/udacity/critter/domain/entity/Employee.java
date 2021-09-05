@@ -14,13 +14,15 @@ import java.util.Set;
 public class Employee extends User {
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "EmployeeSkill", joinColumns = @JoinColumn(name = "id"))
+    @CollectionTable(name = "Skill", joinColumns = @JoinColumn(name = "employee_id"))
     @Enumerated(EnumType.STRING)
+    @Column(name = "skill")
     private Set<EmployeeSkill> skills;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "DayOfWeek", joinColumns = @JoinColumn(name = "id"))
+    @CollectionTable(name = "DayOfWeek", joinColumns = @JoinColumn(name = "employee_id"))
     @Enumerated(EnumType.STRING)
+    @Column(name = "day_of_week")
     private Set<DayOfWeek> daysAvailable;
 
     @ManyToOne
