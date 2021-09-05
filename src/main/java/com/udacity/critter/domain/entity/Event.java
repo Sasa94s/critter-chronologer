@@ -1,14 +1,12 @@
 package com.udacity.critter.domain.entity;
 
+import com.udacity.critter.domain.enums.EmployeeSkill;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.OffsetTime;
+import java.time.LocalTime;
 import java.util.Set;
 
 @Entity
@@ -16,16 +14,19 @@ import java.util.Set;
 @Setter
 public class Event {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
     private String name;
     private LocalDate date;
-    private OffsetTime start;
-    private OffsetTime end;
+    private LocalTime start;
+    private LocalTime end;
 
-    @OneToMany(mappedBy = "event")
-    private Set<Activity> activities;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "Activity", joinColumns = @JoinColumn(name = "id"))
+    @Enumerated(EnumType.STRING)
+    private Set<EmployeeSkill> activities;
 
     @OneToMany(mappedBy = "event")
     private Set<Employee> employees;
