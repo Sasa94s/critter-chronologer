@@ -13,6 +13,10 @@ public abstract class UserService<T extends User, TDto extends UserDTO, TRepo ex
         this.repository = repository;
     }
 
+    public boolean exists(long id) {
+        return repository.countById(id) == 1;
+    }
+
     public void validateForCreate(TDto t) {
         long count = repository.countById(t.getId());
         if (count == 1) {
