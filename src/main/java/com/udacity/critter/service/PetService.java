@@ -34,7 +34,8 @@ public class PetService {
     public PetDTO create(PetDTO petDTO) {
         validateForCreate(petDTO);
         Pet pet = mapper.map(petDTO, Pet.class);
-        repository.save(pet);
+        pet = repository.save(pet);
+        petDTO.setId(pet.getId());
 
         return petDTO;
     }

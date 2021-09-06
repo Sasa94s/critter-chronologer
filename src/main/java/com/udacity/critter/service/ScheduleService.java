@@ -68,7 +68,8 @@ public class ScheduleService {
     public ScheduleDTO create(ScheduleDTO scheduleDTO) {
         validateForCreate(scheduleDTO);
         Event event = mapper.map(scheduleDTO, Event.class);
-        repository.save(event);
+        event = repository.save(event);
+        scheduleDTO.setId(event.getId());
 
         return scheduleDTO;
     }

@@ -31,26 +31,29 @@ public class CustomerService extends UserService<Customer, CustomerDTO, Customer
     @Override
     public void validateForCreate(CustomerDTO customerDTO) {
         super.validateForCreate(customerDTO);
-        customerDTO.getPetIds()
-                .forEach(petId -> {
-                    long count = petRepository.countById(petId);
-                    if (count != 1) {
-                        throw new NotFoundException(String.format("Pet ID %d does not exist", petId));
-                    }
-                });
-        customerDTO.getPetIds()
-                .forEach(petId -> {
-                    long count = repository.countByPetId(petId);
-                    if (count != 0) {
-                        throw new AlreadyExistsException(String.format("Pet ID %d already owned by a Customer", petId));
-                    }
-                });
+        if (customerDTO.getPetIds() != null) {
+            customerDTO.getPetIds()
+                    .forEach(petId -> {
+                        long count = petRepository.countById(petId);
+                        if (count != 1) {
+                            throw new NotFoundException(String.format("Pet ID %d does not exist", petId));
+                        }
+                    });
+            customerDTO.getPetIds()
+                    .forEach(petId -> {
+                        long count = repository.countByPetId(petId);
+                        if (count != 0) {
+                            throw new AlreadyExistsException(String.format("Pet ID %d already owned by a Customer", petId));
+                        }
+                    });
+        }
     }
 
     public CustomerDTO create(CustomerDTO customerDTO) {
         validateForCreate(customerDTO);
         Customer customer = mapper.map(customerDTO, Customer.class);
-        repository.save(customer);
+        customer = repository.save(customer);
+        customerDTO.setId(customer.getId());
 
         return customerDTO;
     }
@@ -64,7 +67,8 @@ public class CustomerService extends UserService<Customer, CustomerDTO, Customer
     }
 
     public CustomerDTO getByPetId(long petId) {
-        Customer owner = repository.getByPetId(petId);
+        Customer owner = repository.getByPetId(petId)
+                .orElseThrow(() -> new NotFoundException("Owner does not exist"));
 
         return mapper.map(owner, CustomerDTO.class);
     }

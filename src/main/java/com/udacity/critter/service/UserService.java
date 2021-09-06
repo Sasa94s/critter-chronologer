@@ -30,7 +30,7 @@ public abstract class UserService<T extends User, TDto extends UserDTO, TRepo ex
         if (count == 1) {
             throw new AlreadyExistsException(String.format("Email Address %s already exists", t.getEmailAddress()));
         }
-        if (t.getCity().isEmpty()) {
+        if (t.getCity() == null || t.getCity().isEmpty()) {
             throw new EmptyException("City cannot be empty");
         }
     }

@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,7 +28,8 @@ public class EmployeeService extends UserService<Employee, EmployeeDTO, Employee
     public EmployeeDTO create(EmployeeDTO employeeDTO) {
         validateForCreate(employeeDTO);
         Employee employee = mapper.map(employeeDTO, Employee.class);
-        repository.save(employee);
+        employee = repository.save(employee);
+        employeeDTO.setId(employee.getId());
 
         return employeeDTO;
     }
@@ -52,12 +52,12 @@ public class EmployeeService extends UserService<Employee, EmployeeDTO, Employee
         }
     }
 
-    public List<EmployeeDTO> getAllBySkillsAvailability(EmployeeRequestDTO employeeRequestDTO) {
-        List<Employee> employees = repository.getAllBySkillsAvailability(
+    public Set<EmployeeDTO> getAllBySkillsAvailability(EmployeeRequestDTO employeeRequestDTO) {
+        Set<Employee> employees = repository.getAllBySkillsAvailability(
                 employeeRequestDTO.getSkills(), employeeRequestDTO.getDate().getDayOfWeek());
 
         return employees.stream()
                 .map(employee -> mapper.map(employee, EmployeeDTO.class))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 }
