@@ -2,6 +2,7 @@ package com.udacity.critter.controller;
 
 import com.udacity.critter.domain.dto.PetDTO;
 import com.udacity.critter.service.PetService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,12 +12,9 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/pet")
+@RequiredArgsConstructor
 public class PetController {
     private final PetService service;
-
-    public PetController(PetService service) {
-        this.service = service;
-    }
 
     @PostMapping
     public PetDTO savePet(@RequestBody PetDTO petDTO) {

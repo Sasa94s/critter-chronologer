@@ -5,6 +5,7 @@ import com.udacity.critter.domain.dto.EmployeeDTO;
 import com.udacity.critter.domain.dto.EmployeeRequestDTO;
 import com.udacity.critter.service.CustomerService;
 import com.udacity.critter.service.EmployeeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
@@ -19,18 +20,11 @@ import java.util.Set;
  */
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
 
     private final CustomerService customerService;
     private final EmployeeService employeeService;
-
-    public UserController(
-            CustomerService customerService,
-            EmployeeService employeeService
-    ) {
-        this.customerService = customerService;
-        this.employeeService = employeeService;
-    }
 
     @PostMapping("/customer")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {

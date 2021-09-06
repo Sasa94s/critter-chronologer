@@ -5,6 +5,7 @@ import com.udacity.critter.domain.entity.Pet;
 import com.udacity.critter.exception.AlreadyExistsException;
 import com.udacity.critter.exception.NotFoundException;
 import com.udacity.critter.repository.PetRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -12,17 +13,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PetService {
     private final ModelMapper mapper;
     private final PetRepository repository;
-
-    public PetService(
-            ModelMapper mapper,
-            PetRepository repository
-    ) {
-        this.mapper = mapper;
-        this.repository = repository;
-    }
 
     private void validateForCreate(PetDTO petDTO) {
         long count = repository.countById(petDTO.getId());

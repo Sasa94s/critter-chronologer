@@ -5,6 +5,7 @@ import com.udacity.critter.domain.entity.Event;
 import com.udacity.critter.exception.AlreadyExistsException;
 import com.udacity.critter.mapper.converter.StringTimeConverter;
 import com.udacity.critter.repository.EventRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -13,17 +14,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ScheduleService {
     private final ModelMapper mapper;
     private final EventRepository repository;
-
-    public ScheduleService(
-            ModelMapper mapper,
-            EventRepository repository
-    ) {
-        this.mapper = mapper;
-        this.repository = repository;
-    }
 
     private void validateForCreate(ScheduleDTO scheduleDTO) {
         long count = repository.countById(scheduleDTO.getId());

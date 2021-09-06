@@ -2,6 +2,7 @@ package com.udacity.critter.controller;
 
 import com.udacity.critter.domain.dto.ScheduleDTO;
 import com.udacity.critter.service.ScheduleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,12 +12,9 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/schedule")
+@RequiredArgsConstructor
 public class ScheduleController {
     private final ScheduleService service;
-
-    public ScheduleController(ScheduleService service) {
-        this.service = service;
-    }
 
     @PostMapping
     public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
