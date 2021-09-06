@@ -2,8 +2,8 @@ package com.udacity.critter.service;
 
 import com.udacity.critter.domain.dto.ScheduleDTO;
 import com.udacity.critter.domain.entity.Event;
-import com.udacity.critter.domain.mapping.converter.StringTimeConverter;
 import com.udacity.critter.exception.AlreadyExistsException;
+import com.udacity.critter.mapper.converter.StringTimeConverter;
 import com.udacity.critter.repository.EventRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

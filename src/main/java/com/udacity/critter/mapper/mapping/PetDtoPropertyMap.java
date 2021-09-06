@@ -1,9 +1,9 @@
-package com.udacity.critter.domain.mapping;
+package com.udacity.critter.mapper.mapping;
 
 import com.udacity.critter.domain.dto.PetDTO;
 import com.udacity.critter.domain.entity.Pet;
-import com.udacity.critter.domain.mapping.converter.CustomerIdConverter;
-import com.udacity.critter.domain.mapping.converter.StringPetTypeConverter;
+import com.udacity.critter.mapper.converter.CustomerIdConverter;
+import com.udacity.critter.mapper.converter.StringPetTypeConverter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;

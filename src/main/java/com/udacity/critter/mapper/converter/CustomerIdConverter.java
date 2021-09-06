@@ -1,4 +1,4 @@
-package com.udacity.critter.domain.mapping.converter;
+package com.udacity.critter.mapper.converter;
 
 import com.udacity.critter.domain.entity.Customer;
 import com.udacity.critter.exception.NotFoundException;

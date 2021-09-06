@@ -1,4 +1,4 @@
-package com.udacity.critter.domain.mapping.converter;
+package com.udacity.critter.mapper.converter;
 
 import org.modelmapper.AbstractConverter;
 import org.springframework.stereotype.Component;

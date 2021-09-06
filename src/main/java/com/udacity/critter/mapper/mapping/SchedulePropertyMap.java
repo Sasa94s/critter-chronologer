@@ -1,11 +1,11 @@
-package com.udacity.critter.domain.mapping;
+package com.udacity.critter.mapper.mapping;
 
 import com.udacity.critter.domain.dto.ScheduleDTO;
 import com.udacity.critter.domain.entity.Event;
-import com.udacity.critter.domain.mapping.converter.CustomersConverter;
-import com.udacity.critter.domain.mapping.converter.EmployeesConverter;
-import com.udacity.critter.domain.mapping.converter.PetsConverter;
-import com.udacity.critter.domain.mapping.converter.TimeStringConverter;
+import com.udacity.critter.mapper.converter.CustomersConverter;
+import com.udacity.critter.mapper.converter.EmployeesConverter;
+import com.udacity.critter.mapper.converter.PetsConverter;
+import com.udacity.critter.mapper.converter.TimeStringConverter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.udacity.critter.domain.mapping.converter;
+package com.udacity.critter.mapper.converter;
 
 import com.udacity.critter.domain.entity.Pet;
 import com.udacity.critter.repository.PetRepository;
