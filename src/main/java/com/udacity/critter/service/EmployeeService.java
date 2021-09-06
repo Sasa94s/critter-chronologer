@@ -53,10 +53,9 @@ public class EmployeeService extends UserService<Employee, EmployeeDTO, Employee
     }
 
     public Set<EmployeeDTO> getAllBySkillsAvailability(EmployeeRequestDTO employeeRequestDTO) {
-        Set<Employee> employees = repository.getAllBySkillsAvailability(
-                employeeRequestDTO.getSkills(), employeeRequestDTO.getDate().getDayOfWeek());
-
-        return employees.stream()
+        return repository.getAllBySkillsAvailability(
+                        employeeRequestDTO.getSkills(), employeeRequestDTO.getDate().getDayOfWeek()).stream()
+                .filter(employee -> employee.getSkills().containsAll(employeeRequestDTO.getSkills()))
                 .map(employee -> mapper.map(employee, EmployeeDTO.class))
                 .collect(Collectors.toSet());
     }
