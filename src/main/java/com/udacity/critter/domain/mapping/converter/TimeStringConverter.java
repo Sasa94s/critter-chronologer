@@ -1,11 +1,13 @@
 package com.udacity.critter.domain.mapping.converter;
 
 import org.modelmapper.AbstractConverter;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+@Component
 public class TimeStringConverter extends AbstractConverter<LocalTime, String> {
     private static final DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.US);
 

@@ -6,32 +6,24 @@ import com.udacity.critter.domain.mapping.converter.CustomerIdsConverter;
 import com.udacity.critter.domain.mapping.converter.EmployeeIdsConverter;
 import com.udacity.critter.domain.mapping.converter.PetIdsConverter;
 import com.udacity.critter.domain.mapping.converter.StringTimeConverter;
-import com.udacity.critter.repository.CustomerRepository;
-import com.udacity.critter.repository.EmployeeRepository;
-import com.udacity.critter.repository.PetRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.PropertyMap;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class ScheduleDtoPropertyMap extends PropertyMap<ScheduleDTO, Event> {
-    private final CustomerRepository customerRepository;
-    private final EmployeeRepository employeeRepository;
-    private final PetRepository petRepository;
-
-    public ScheduleDtoPropertyMap(
-            CustomerRepository customerRepository,
-            EmployeeRepository employeeRepository,
-            PetRepository petRepository
-    ) {
-        this.customerRepository = customerRepository;
-        this.employeeRepository = employeeRepository;
-        this.petRepository = petRepository;
-    }
+    private final StringTimeConverter stringTimeConverter;
+    private final CustomerIdsConverter customerIdsConverter;
+    private final EmployeeIdsConverter employeeIdsConverter;
+    private final PetIdsConverter petIdsConverter;
 
     @Override
     protected void configure() {
-        using(new StringTimeConverter()).map(source.getStart(), destination.getStart());
-        using(new StringTimeConverter()).map(source.getEnd(), destination.getEnd());
-        using(new CustomerIdsConverter(customerRepository)).map(source.getCustomerIds(), destination.getCustomers());
-        using(new EmployeeIdsConverter(employeeRepository)).map(source.getEmployeeIds(), destination.getEmployees());
-        using(new PetIdsConverter(petRepository)).map(source.getPetIds(), destination.getPets());
+        using(stringTimeConverter).map(source.getStart(), destination.getStart());
+        using(stringTimeConverter).map(source.getEnd(), destination.getEnd());
+        using(customerIdsConverter).map(source.getCustomerIds(), destination.getCustomers());
+        using(employeeIdsConverter).map(source.getEmployeeIds(), destination.getEmployees());
+        using(petIdsConverter).map(source.getPetIds(), destination.getPets());
     }
 }

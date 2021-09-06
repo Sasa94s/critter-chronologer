@@ -6,15 +6,24 @@ import com.udacity.critter.domain.mapping.converter.CustomersConverter;
 import com.udacity.critter.domain.mapping.converter.EmployeesConverter;
 import com.udacity.critter.domain.mapping.converter.PetsConverter;
 import com.udacity.critter.domain.mapping.converter.TimeStringConverter;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.PropertyMap;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class SchedulePropertyMap extends PropertyMap<Event, ScheduleDTO> {
+    private final TimeStringConverter timeStringConverter;
+    private final CustomersConverter customersConverter;
+    private final EmployeesConverter employeesConverter;
+    private final PetsConverter petsConverter;
+
     @Override
     protected void configure() {
-        using(new TimeStringConverter()).map(source.getStart(), destination.getStart());
-        using(new TimeStringConverter()).map(source.getEnd(), destination.getEnd());
-        using(new CustomersConverter()).map(source.getCustomers(), destination.getCustomerIds());
-        using(new EmployeesConverter()).map(source.getEmployees(), destination.getEmployeeIds());
-        using(new PetsConverter()).map(source.getPets(), destination.getPetIds());
+        using(timeStringConverter).map(source.getStart(), destination.getStart());
+        using(timeStringConverter).map(source.getEnd(), destination.getEnd());
+        using(customersConverter).map(source.getCustomers(), destination.getCustomerIds());
+        using(employeesConverter).map(source.getEmployees(), destination.getEmployeeIds());
+        using(petsConverter).map(source.getPets(), destination.getPetIds());
     }
 }

@@ -2,19 +2,21 @@ package com.udacity.critter.domain.mapping;
 
 import com.udacity.critter.domain.dto.PetDTO;
 import com.udacity.critter.domain.entity.Pet;
-import com.udacity.critter.domain.mapping.converter.CustomerIdsConverter;
-import com.udacity.critter.repository.CustomerRepository;
+import com.udacity.critter.domain.mapping.converter.CustomerIdConverter;
+import com.udacity.critter.domain.mapping.converter.StringPetTypeConverter;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.PropertyMap;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class PetDtoPropertyMap extends PropertyMap<PetDTO, Pet> {
-    private final CustomerRepository customerRepository;
-
-    public PetDtoPropertyMap(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
+    private final CustomerIdConverter customerIdConverter;
+    private final StringPetTypeConverter stringPetTypeConverter;
 
     @Override
     protected void configure() {
-        using(new CustomerIdsConverter(customerRepository)).map(source.getOwnerId(), destination.getOwner());
+        using(customerIdConverter).map(source.getOwnerId(), destination.getOwner());
+        using(stringPetTypeConverter).map(source.getType(), destination.getType());
     }
 }
