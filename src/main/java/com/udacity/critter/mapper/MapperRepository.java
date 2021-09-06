@@ -21,7 +21,6 @@ public class MapperRepository {
             EmployeesConverter employeesConverter,
             PetIdsConverter petIdsConverter,
             PetsConverter petsConverter,
-            PetTypeConverter petTypeConverter,
             StringPetTypeConverter stringPetTypeConverter,
             StringTimeConverter stringTimeConverter,
             TimeStringConverter timeStringConverter
@@ -33,7 +32,6 @@ public class MapperRepository {
         converters.add(employeesConverter);
         converters.add(petIdsConverter);
         converters.add(petsConverter);
-        converters.add(petTypeConverter);
         converters.add(stringPetTypeConverter);
         converters.add(stringTimeConverter);
         converters.add(timeStringConverter);
