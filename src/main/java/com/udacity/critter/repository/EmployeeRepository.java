@@ -16,10 +16,14 @@ public interface EmployeeRepository extends UserRepository<Employee> {
             "WHERE s = :skill")
     long countBySkill(EmployeeSkill skill);
 
-    @Query("SELECT e FROM Employee e " +
+    @Query("SELECT DISTINCT e FROM Employee e " +
+            "WHERE e.id IN :ids")
+    Set<Employee> findAllByIds(List<Long> ids);
+
+    @Query("SELECT DISTINCT e FROM Employee e " +
             "JOIN e.skills s " +
             "JOIN e.daysAvailable d " +
             "WHERE s IN :skills AND " +
             "d = :dayOfWeek")
-    List<Employee> getAllBySkillsAvailability(Set<EmployeeSkill> skills, DayOfWeek dayOfWeek);
+    Set<Employee> getAllBySkillsAvailability(Set<EmployeeSkill> skills, DayOfWeek dayOfWeek);
 }

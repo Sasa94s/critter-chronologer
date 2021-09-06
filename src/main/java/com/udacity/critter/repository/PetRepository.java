@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface PetRepository extends JpaRepository<Pet, Long> {
@@ -16,6 +17,10 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
             "JOIN p.owner c " +
             "WHERE c.id = :customerId")
     long countByCustomerId(Long customerId);
+
+    @Query("SELECT DISTINCT p FROM Pet p " +
+            "WHERE p.id IN :petIds")
+    Set<Pet> findAllByIds(List<Long> petIds);
 
     @Query("SELECT p FROM Pet p " +
             "JOIN p.owner o " +
