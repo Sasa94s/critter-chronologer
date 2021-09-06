@@ -1,5 +1,6 @@
 package com.udacity.critter.domain.entity;
 
+import com.udacity.critter.domain.contract.BaseIdEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,8 @@ import javax.persistence.*;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Getter
 @Setter
-public class User {
+@DiscriminatorValue("User")
+public class User implements BaseIdEntity<Long> {
 
     @Id
     @Column(name = "id", nullable = false)

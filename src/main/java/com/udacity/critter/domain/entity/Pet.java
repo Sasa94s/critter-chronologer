@@ -1,5 +1,6 @@
 package com.udacity.critter.domain.entity;
 
+import com.udacity.critter.domain.contract.BaseIdEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +10,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
-public class Pet {
+public class Pet implements BaseIdEntity<Long> {
 
     @Id
     @Column(name = "id", nullable = false)

@@ -15,23 +15,21 @@ public class MapperRepository {
 
     @Bean
     public List<Converter<?, ?>> converters(
+            AbstractEntitiesConverter<Long> abstractEntitiesConverter,
             CustomerIdConverter customerIdConverter,
             CustomerIdsConverter customerIdsConverter,
             EmployeeIdsConverter employeeIdsConverter,
-            EmployeesConverter employeesConverter,
             PetIdsConverter petIdsConverter,
-            PetsConverter petsConverter,
             StringPetTypeConverter stringPetTypeConverter,
             StringTimeConverter stringTimeConverter,
             TimeStringConverter timeStringConverter
     ) {
         List<Converter<?, ?>> converters = new ArrayList<>();
+        converters.add(abstractEntitiesConverter);
         converters.add(customerIdConverter);
         converters.add(customerIdsConverter);
         converters.add(employeeIdsConverter);
-        converters.add(employeesConverter);
         converters.add(petIdsConverter);
-        converters.add(petsConverter);
         converters.add(stringPetTypeConverter);
         converters.add(stringTimeConverter);
         converters.add(timeStringConverter);

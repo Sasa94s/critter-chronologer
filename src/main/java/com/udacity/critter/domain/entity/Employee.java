@@ -11,6 +11,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@DiscriminatorValue(value = "Employee")
 public class Employee extends User {
 
     @ElementCollection(fetch = FetchType.EAGER)
