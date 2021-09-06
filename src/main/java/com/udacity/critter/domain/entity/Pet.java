@@ -22,7 +22,7 @@ public class Pet implements BaseIdEntity<Long> {
 
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Customer owner;
 
     private LocalDate birthDate;
