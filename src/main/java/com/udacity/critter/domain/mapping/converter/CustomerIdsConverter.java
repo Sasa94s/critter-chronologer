@@ -16,10 +16,6 @@ public class CustomerIdsConverter extends AbstractConverter<List<Long>, Set<Cust
 
     @Override
     protected Set<Customer> convert(List<Long> customerIds) {
-        if (customerIds == null || customerIds.isEmpty()) return new HashSet<>();
-
-        return customerIds.stream()
-                .map(repository::getById)
-                .collect(Collectors.toSet());
+        return repository.findAllByIds(customerIds);
     }
 }

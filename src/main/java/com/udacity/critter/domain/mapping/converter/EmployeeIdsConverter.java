@@ -16,10 +16,6 @@ public class EmployeeIdsConverter extends AbstractConverter<List<Long>, Set<Empl
 
     @Override
     protected Set<Employee> convert(List<Long> employeeIds) {
-        if (employeeIds == null || employeeIds.isEmpty()) return new HashSet<>();
-
-        return employeeIds.stream()
-                .map(repository::getById)
-                .collect(Collectors.toSet());
+        return repository.findAllByIds(employeeIds);
     }
 }

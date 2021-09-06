@@ -16,10 +16,6 @@ public class PetIdsConverter extends AbstractConverter<List<Long>, Set<Pet>> {
 
     @Override
     protected Set<Pet> convert(List<Long> petIds) {
-        if (petIds == null || petIds.isEmpty()) return new HashSet<>();
-
-        return petIds.stream()
-                .map(repository::getById)
-                .collect(Collectors.toSet());
+        return repository.findAllByIds(petIds);
     }
 }
