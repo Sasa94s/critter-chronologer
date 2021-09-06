@@ -5,9 +5,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+@Entity
 @Getter
 @Setter
-@Entity
 public class PetType {
     @Id
     @Column(name = "id", nullable = false)
@@ -15,5 +15,4 @@ public class PetType {
     private Long id;
 
     private String type;
-    private String classification;
 }

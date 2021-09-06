@@ -29,13 +29,16 @@ public class Event {
     @Column(name = "activity")
     private Set<EmployeeSkill> activities;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "event_id")
     private Set<Employee> employees;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "event_id")
     private Set<Customer> customers;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "event_id")
     private Set<Pet> pets;
 
 }
