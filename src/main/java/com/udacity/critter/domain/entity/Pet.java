@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -22,13 +23,14 @@ public class Pet implements BaseIdEntity<Long> {
 
     private String name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
     private Customer owner;
 
     private LocalDate birthDate;
     private String notes;
 
-    @ManyToOne
-    private Event event;
+    @ManyToMany(mappedBy = "pets")
+    private Set<Event> event;
 
 }

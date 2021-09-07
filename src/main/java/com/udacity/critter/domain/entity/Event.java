@@ -31,18 +31,15 @@ public class Event implements BaseIdEntity<Long> {
     @Column(name = "activity")
     private Set<EmployeeSkill> activities;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "event_id")
+    @ManyToMany(cascade = CascadeType.ALL)
     @Where(clause = "DTYPE='Employee'")
     private Set<Employee> employees;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "event_id")
+    @ManyToMany(cascade = CascadeType.ALL)
     @Where(clause = "DTYPE='Customer'")
     private Set<Customer> customers;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "event_id")
+    @ManyToMany(cascade = CascadeType.ALL)
     private Set<Pet> pets;
 
 }

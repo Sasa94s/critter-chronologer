@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
@@ -62,16 +63,16 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT e FROM Event e " +
             "JOIN e.customers c " +
             "WHERE c.id = :customerId")
-    List<Event> getAllByCustomerId(Long customerId);
+    Set<Event> getAllByCustomerId(Long customerId);
 
-    @Query("SELECT e FROM Event e " +
+    @Query("SELECT DISTINCT e FROM Event e " +
             "JOIN e.employees emp " +
             "WHERE emp.id = :employeeId")
-    List<Event> getAllByEmployeeId(Long employeeId);
+    Set<Event> getAllByEmployeeId(Long employeeId);
 
     @Query("SELECT e FROM Event e " +
             "JOIN e.pets p " +
             "WHERE p.id = :petId")
-    List<Event> getAllByPetId(Long petId);
+    Set<Event> getAllByPetId(Long petId);
 
 }

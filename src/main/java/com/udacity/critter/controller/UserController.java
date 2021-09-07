@@ -31,13 +31,18 @@ public class UserController {
         return customerService.create(customerDTO);
     }
 
+    @GetMapping("/customer/{customerId}")
+    public CustomerDTO getCustomer(@PathVariable long customerId) {
+        return customerService.get(customerId);
+    }
+
     @GetMapping("/customer")
     public List<CustomerDTO> getAllCustomers() {
         return customerService.getAll();
     }
 
     @GetMapping("/customer/pet/{petId}")
-    public CustomerDTO getOwnerByPet(@PathVariable long petId){
+    public CustomerDTO getOwnerByPet(@PathVariable long petId) {
         return customerService.getByPetId(petId);
     }
 

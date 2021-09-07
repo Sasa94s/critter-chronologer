@@ -58,6 +58,12 @@ public class CustomerService extends UserService<Customer, CustomerDTO, Customer
         return customerDTO;
     }
 
+    public CustomerDTO get(long id) {
+        return repository.findById(id)
+                .map(customer -> mapper.map(customer, CustomerDTO.class))
+                .orElseThrow(() -> new NotFoundException(String.format("ID %d not found", id)));
+    }
+
     public List<CustomerDTO> getAll() {
         List<Customer> customers = repository.findAll();
 

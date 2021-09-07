@@ -15,8 +15,9 @@ public interface CustomerRepository extends UserRepository<Customer> {
             "WHERE p.id = :petId")
     long countByPetId(Long petId);
 
-    @Query("SELECT c FROM Customer c " +
-            "JOIN c.pets p " +
+    @Query("SELECT p.owner FROM Pet p " +
+            "JOIN p.owner c " +
+            "JOIN c.pets p2 " +
             "WHERE p.id = :petId")
     Optional<Customer> getByPetId(Long petId);
 

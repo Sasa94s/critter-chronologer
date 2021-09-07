@@ -14,10 +14,9 @@ public class Customer extends User {
 
     private String notes;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "owner_id")
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Pet> pets;
 
-    @ManyToOne
-    private Event event;
+    @ManyToMany(mappedBy = "customers")
+    private Set<Event> event;
 }

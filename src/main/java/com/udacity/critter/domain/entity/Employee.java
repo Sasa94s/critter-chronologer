@@ -26,7 +26,7 @@ public class Employee extends User {
     @Column(name = "day_of_week")
     private Set<DayOfWeek> daysAvailable;
 
-    @ManyToOne
-    private Event event;
+    @ManyToMany(mappedBy = "employees")
+    private Set<Event> event;
 
 }
