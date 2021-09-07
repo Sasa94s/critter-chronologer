@@ -8,11 +8,13 @@ import com.udacity.critter.repository.CustomerRepository;
 import com.udacity.critter.repository.PetRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class CustomerService extends UserService<Customer, CustomerDTO, CustomerRepository> {
 
     private final ModelMapper mapper;

@@ -7,6 +7,7 @@ import com.udacity.critter.exception.NotFoundException;
 import com.udacity.critter.repository.EmployeeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class EmployeeService extends UserService<Employee, EmployeeDTO, EmployeeRepository> {
     private final ModelMapper mapper;
 
