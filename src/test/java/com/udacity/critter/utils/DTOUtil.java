@@ -86,24 +86,24 @@ public class DTOUtil {
                 customers.stream().map(UserDTO::getId).collect(Collectors.toList()));
     }
 
-    public static List<PetDTO> batchPets(int offset, int petCount, List<CustomerDTO> customers) {
-        return LongStream.range(offset, petCount + offset)
+    public static List<PetDTO> batchPets(int petCount, List<CustomerDTO> customers) {
+        return LongStream.range(0, petCount)
                 .mapToObj(i -> customers.stream()
-                        .map(customer -> generatePet(i, customer.getId()))
+                        .map(customer -> generatePet(null, customer.getId()))
                         .collect(Collectors.toList()))
                 .flatMap(Collection::stream)
                 .distinct()
                 .collect(Collectors.toList());
     }
 
-    public static List<EmployeeDTO> batchEmployees(int offset, int employeeCount) {
-        return LongStream.range(offset, employeeCount + offset)
-                .mapToObj(DTOUtil::generateEmployee)
+    public static List<EmployeeDTO> batchEmployees(int employeeCount) {
+        return LongStream.range(0, employeeCount)
+                .mapToObj(id -> generateEmployee(null))
                 .collect(Collectors.toList());
     }
 
-    public static List<CustomerDTO> batchCustomers(int offset, int customerCount) {
-        return LongStream.range(offset, customerCount + offset)
+    public static List<CustomerDTO> batchCustomers(int customerCount) {
+        return LongStream.range(0, customerCount)
                 .mapToObj(DTOUtil::generateCustomer)
                 .collect(Collectors.toList());
     }
@@ -128,6 +128,7 @@ public class DTOUtil {
                 .collect(Collectors.toList());
     }
 
+    @SafeVarargs
     public static List<PetDTO> batchPet(Pair<Long, Long>... ids) {
         if (ids.length == 0) throw new IllegalArgumentException();
 

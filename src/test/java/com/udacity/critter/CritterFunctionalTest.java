@@ -6,7 +6,6 @@ import com.udacity.critter.controller.ScheduleController;
 import com.udacity.critter.controller.UserController;
 import com.udacity.critter.domain.dto.*;
 import com.udacity.critter.domain.enums.EmployeeSkill;
-import com.udacity.critter.exception.AlreadyExistsException;
 import com.udacity.critter.utils.DTOUtil;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -176,36 +175,15 @@ public class CritterFunctionalTest {
     }
 
     private ScheduleDTO createSchedule(int customerCount, int employeeCount, int petCount) {
-        List<CustomerDTO> customers = DTOUtil.batchCustomers(1, customerCount).stream()
-                .map(customer -> {
-                    try {
-                        customer = userController.saveCustomer(customer);
-                    } catch (AlreadyExistsException ignored) {
-                    }
-                    return userController.getCustomer(customer.getId());
-                })
+        List<CustomerDTO> customers = DTOUtil.batchCustomers(customerCount).stream()
+                .map(customer -> userController.saveCustomer(customer))
                 .collect(Collectors.toList());
-        flushAndClear();
-        List<EmployeeDTO> employees = DTOUtil.batchEmployees(1, employeeCount).stream()
-                .map(employee -> {
-                    try {
-                        employee = userController.saveEmployee(employee);
-                    } catch (AlreadyExistsException ignored) {
-                    }
-                    return userController.getEmployee(employee.getId());
-                })
+        List<EmployeeDTO> employees = DTOUtil.batchEmployees(employeeCount).stream()
+                .map(employee -> userController.saveEmployee(employee))
                 .collect(Collectors.toList());
-        flushAndClear();
-        List<PetDTO> pets = DTOUtil.batchPets(1, petCount, customers).stream()
-                .map(pet -> {
-                    try {
-                        pet = petController.savePet(pet);
-                    } catch (AlreadyExistsException ignored) {
-                    }
-                    return petController.getPet(pet.getId());
-                })
+        List<PetDTO> pets = DTOUtil.batchPets(petCount, customers).stream()
+                .map(pet -> petController.savePet(pet))
                 .collect(Collectors.toList());
-        flushAndClear();
 
         return scheduleController.createSchedule(DTOUtil.generateSchedule(
                 null,
@@ -217,51 +195,48 @@ public class CritterFunctionalTest {
     @Test
     public void testFindScheduleByEntities() {
         ScheduleDTO schedule1 = createSchedule(1, 1, 2);
-        ScheduleDTO schedule2 = createSchedule(3, 3, 1);
+        ScheduleDTO schedule2 = createSchedule(1, 3, 1);
         //add a third schedule that shares some employees and pets with the other schedules
         ScheduleDTO schedule3 = scheduleController.createSchedule(DTOUtil.generateSchedule(null,
                 Sets.newHashSet(EmployeeSkill.SHAVING, EmployeeSkill.PETTING),
                 schedule2.getPetIds(),
                 schedule1.getEmployeeIds(),
-                schedule1.getCustomerIds()));
+                schedule2.getCustomerIds()));
 
         /*
             We now have 3 schedule entries. The third schedule entry has the same employees as the 1st schedule
             and the same pets/owners as the second schedule. So if we look up schedule entries for the employee from
             schedule 1, we should get both the first and third schedule as our result.
          */
-        flushAndClear();
 
-        //Employee 1 in is both schedule 1 and 2 and 3
+        // Employee 1 in is both schedule 1 and 3
         List<ScheduleDTO> schedules1 = scheduleController.getScheduleForEmployee(schedule1.getEmployeeIds().get(0));
         compareSchedules(schedule1, schedules1.get(0));
-        compareSchedules(schedule2, schedules1.get(1));
-        compareSchedules(schedule3, schedules1.get(2));
+        compareSchedules(schedule3, schedules1.get(1));
 
-        //Employee 2 is only in schedule 2
+        // Employee 2 is only in Schedule 2
         List<ScheduleDTO> schedules2 = scheduleController.getScheduleForEmployee(schedule2.getEmployeeIds().get(0));
         compareSchedules(schedule2, schedules2.get(0));
 
-        //Pet 1 is in schedules 1 and 2 and 3
-        List<ScheduleDTO> schedulesPet1 = scheduleController.getScheduleForPet(schedule2.getPetIds().get(0));
+        // Pet 1 is only in Schedule 1
+        List<ScheduleDTO> schedulesPet1 = scheduleController.getScheduleForPet(schedule1.getPetIds().get(0));
         compareSchedules(schedule1, schedulesPet1.get(0));
-        compareSchedules(schedule2, schedulesPet1.get(1));
-        compareSchedules(schedule3, schedulesPet1.get(2));
 
-        //Pet 2 is only in schedule 1
-        List<ScheduleDTO> schedulesPet2 = scheduleController.getScheduleForPet(schedule1.getPetIds().get(1));
-        compareSchedules(schedule1, schedulesPet2.get(0));
+        // Pet from Schedule 2 is in both Schedules 2 and 3
+        List<ScheduleDTO> schedulesPet2 = scheduleController.getScheduleForPet(schedule2.getPetIds().get(0));
+        compareSchedules(schedule2, schedulesPet2.get(0));
+        compareSchedules(schedule3, schedulesPet2.get(1));
 
-        //Owner of the first pet will be in schedule 1
+        // Owner of the first Pet will only be in Schedule 1
         List<ScheduleDTO> scheduleCustomer1 = scheduleController.getScheduleForCustomer(
                 userController.getOwnerByPet(schedule1.getPetIds().get(0)).getId());
         compareSchedules(schedule1, scheduleCustomer1.get(0));
 
-        //Owner of pet from schedule 2 will be in schedules 2 and 3
+        // Owner of Pet from Schedule 2 will be in both Schedules 2 and 3
         List<ScheduleDTO> scheduleCustomer2 = scheduleController.getScheduleForCustomer(
                 userController.getOwnerByPet(schedule2.getPetIds().get(0)).getId());
-        compareSchedules(schedule2, scheduleCustomer2.get(1));
-        compareSchedules(schedule3, scheduleCustomer2.get(2));
+        compareSchedules(schedule2, scheduleCustomer2.get(0));
+        compareSchedules(schedule3, scheduleCustomer2.get(1));
     }
 
     private static void compareSchedules(ScheduleDTO schedule1, ScheduleDTO schedule2) {
