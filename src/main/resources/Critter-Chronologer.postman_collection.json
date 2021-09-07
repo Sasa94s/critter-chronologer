@@ -316,7 +316,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n\t\"date\": \"2019-12-17\",\n\t\"skills\": [\"PETTING\", \"FEEDING\"]\n}",
+          "raw": "{\n\t\"date\": \"2019-12-16\",\n\t\"skills\": [\"PETTING\", \"FEEDING\"]\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -411,6 +411,46 @@
             "user",
             "employee",
             "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Customer By ID",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8082/user/customer/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8082",
+          "path": [
+            "user",
+            "customer",
+            "1"
           ]
         }
       },
@@ -539,9 +579,6 @@
     },
     {
       "name": "Find Schedule By Employee",
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
       "request": {
         "method": "GET",
         "header": [
@@ -552,15 +589,6 @@
             "value": "application/json"
           }
         ],
-        "body": {
-          "mode": "raw",
-          "raw": "[\"MONDAY\", \"TUESDAY\", \"FRIDAY\"]",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
         "url": {
           "raw": "http://localhost:8082/schedule/employee/2",
           "protocol": "http",
