@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.udacity.critter.domain.dto.*;
 import com.udacity.critter.domain.enums.EmployeeSkill;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -12,14 +13,15 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
+@Service
 public class DTOUtil {
     private static final int MAX_ID_BOUND = 100;
 
-    private static long getId() {
+    private long getId() {
         return ThreadLocalRandom.current().nextInt(MAX_ID_BOUND) + 1;
     }
 
-    private static void setUserData(UserDTO userDto, Long id) {
+    private void setUserData(UserDTO userDto, Long id) {
         if (id != null) userDto.setId(id);
         userDto.setName(FakeUtil.generateName().fullName());
         userDto.setPhoneNumber(FakeUtil.generatePhoneNumber());
@@ -28,14 +30,14 @@ public class DTOUtil {
         userDto.setCity(FakeUtil.generateCity());
     }
 
-    public static CustomerDTO generateCustomer(Long id) {
+    public CustomerDTO generateCustomer(Long id) {
         CustomerDTO customerDTO = new CustomerDTO();
         setUserData(customerDTO, id);
         customerDTO.setNotes(FakeUtil.service.numerify("Note ##"));
         return customerDTO;
     }
 
-    public static EmployeeDTO generateEmployee(Long id, Iterable<EmployeeSkill> skills, Iterable<DayOfWeek> daysAvailable) {
+    public EmployeeDTO generateEmployee(Long id, Iterable<EmployeeSkill> skills, Iterable<DayOfWeek> daysAvailable) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
         setUserData(employeeDTO, id);
         employeeDTO.setSkills(Sets.newHashSet(skills));
@@ -43,13 +45,13 @@ public class DTOUtil {
         return employeeDTO;
     }
 
-    public static EmployeeDTO generateEmployee(Long id) {
+    public EmployeeDTO generateEmployee(Long id) {
         Set<EmployeeSkill> skills = Sets.newHashSet(CollectionUtil.pickNRandom(Arrays.asList(EmployeeSkill.values()), 2));
         Set<DayOfWeek> daysAvailable = Sets.newHashSet(CollectionUtil.pickNRandom(Arrays.asList(DayOfWeek.values()), 3));
         return generateEmployee(id, skills, daysAvailable);
     }
 
-    public static PetDTO generatePet(Long id, Long ownerId) {
+    public PetDTO generatePet(Long id, Long ownerId) {
         PetDTO petDTO = new PetDTO();
         if (id != null) petDTO.setId(id);
         petDTO.setName(FakeUtil.generateName().firstName() + " Pet");
@@ -58,12 +60,12 @@ public class DTOUtil {
         return petDTO;
     }
 
-    public static ScheduleDTO generateSchedule(Long id, List<Long> petIds, List<Long> employeeIds, List<Long> customerIds) {
+    public ScheduleDTO generateSchedule(Long id, List<Long> petIds, List<Long> employeeIds, List<Long> customerIds) {
         Set<EmployeeSkill> skills = Sets.newHashSet(CollectionUtil.pickNRandom(Arrays.asList(EmployeeSkill.values()), 2));
         return generateSchedule(id, skills, petIds, employeeIds, customerIds);
     }
 
-    public static ScheduleDTO generateSchedule(Long id, Set<EmployeeSkill> skills, List<Long> petIds, List<Long> employeeIds, List<Long> customerIds) {
+    public ScheduleDTO generateSchedule(Long id, Set<EmployeeSkill> skills, List<Long> petIds, List<Long> employeeIds, List<Long> customerIds) {
         ScheduleDTO scheduleDTO = new ScheduleDTO();
         if (id != null) scheduleDTO.setId(id);
         scheduleDTO.setName(FakeUtil.service.numerify("Event ##"));
@@ -77,7 +79,7 @@ public class DTOUtil {
         return scheduleDTO;
     }
 
-    public static ScheduleDTO generateSchedule(List<PetDTO> pets, List<EmployeeDTO> employees, List<CustomerDTO> customers) {
+    public ScheduleDTO generateSchedule(List<PetDTO> pets, List<EmployeeDTO> employees, List<CustomerDTO> customers) {
 
         return generateSchedule(
                 null,
@@ -86,7 +88,7 @@ public class DTOUtil {
                 customers.stream().map(UserDTO::getId).collect(Collectors.toList()));
     }
 
-    public static List<PetDTO> batchPets(int petCount, List<CustomerDTO> customers) {
+    public List<PetDTO> batchPets(int petCount, List<CustomerDTO> customers) {
         return LongStream.range(0, petCount)
                 .mapToObj(i -> customers.stream()
                         .map(customer -> generatePet(null, customer.getId()))
@@ -96,40 +98,39 @@ public class DTOUtil {
                 .collect(Collectors.toList());
     }
 
-    public static List<EmployeeDTO> batchEmployees(int employeeCount) {
+    public List<EmployeeDTO> batchEmployees(int employeeCount) {
         return LongStream.range(0, employeeCount)
                 .mapToObj(id -> generateEmployee(null))
                 .collect(Collectors.toList());
     }
 
-    public static List<CustomerDTO> batchCustomers(int customerCount) {
+    public List<CustomerDTO> batchCustomers(int customerCount) {
         return LongStream.range(0, customerCount)
-                .mapToObj(DTOUtil::generateCustomer)
+                .mapToObj(this::generateCustomer)
                 .collect(Collectors.toList());
     }
 
-    public static List<CustomerDTO> batchCustomer(Long... ids) {
+    public List<CustomerDTO> batchCustomer(Long... ids) {
         if (ids.length == 0) {
             return Collections.singletonList(generateCustomer(getId()));
         }
 
         return Arrays.stream(ids).sequential()
-                .map(DTOUtil::generateCustomer)
+                .map(this::generateCustomer)
                 .collect(Collectors.toList());
     }
 
-    public static List<EmployeeDTO> batchEmployee(Long... ids) {
+    public List<EmployeeDTO> batchEmployee(Long... ids) {
         if (ids.length == 0) {
             return Collections.singletonList(generateEmployee(getId()));
         }
 
         return Arrays.stream(ids).sequential()
-                .map(DTOUtil::generateEmployee)
+                .map(this::generateEmployee)
                 .collect(Collectors.toList());
     }
 
-    @SafeVarargs
-    public static List<PetDTO> batchPet(Pair<Long, Long>... ids) {
+    public List<PetDTO> batchPet(Pair<Long, Long>... ids) {
         if (ids.length == 0) throw new IllegalArgumentException();
 
         return Arrays.stream(ids).sequential()
@@ -137,7 +138,7 @@ public class DTOUtil {
                 .collect(Collectors.toList());
     }
 
-    public static EmployeeRequestDTO generateEmployeeRequestDTO(EmployeeDTO employeeDTO) {
+    public EmployeeRequestDTO generateEmployeeRequestDTO(EmployeeDTO employeeDTO) {
         if (employeeDTO.getSkills() == null || employeeDTO.getSkills().isEmpty()) throw new IllegalArgumentException();
         if (employeeDTO.getDaysAvailable() == null || employeeDTO.getDaysAvailable().isEmpty())
             throw new IllegalArgumentException();
@@ -150,5 +151,13 @@ public class DTOUtil {
         employeeRequestDTO.setDate(date);
         employeeRequestDTO.setSkills(skills);
         return employeeRequestDTO;
+    }
+
+    public Set<Long> getEmployeeIds(List<EmployeeDTO> newEmployees, EmployeeRequestDTO eRequest1) {
+        return newEmployees.stream()
+                .filter(employeeDTO -> employeeDTO.getDaysAvailable().contains(eRequest1.getDate().getDayOfWeek()))
+                .filter(employeeDTO -> employeeDTO.getSkills().contains(eRequest1.getSkills().iterator().next()))
+                .map(UserDTO::getId)
+                .collect(Collectors.toSet());
     }
 }
