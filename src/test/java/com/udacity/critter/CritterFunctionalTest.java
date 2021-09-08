@@ -40,18 +40,6 @@ public class CritterFunctionalTest {
     @Autowired
     private DTOService dtoService;
 
-    @PersistenceContext
-    private EntityManager em;
-
-    private void flushAndClear() {
-        em.flush();
-        em.clear();
-    }
-
-    @BeforeAll
-    public static void setUp() {
-    }
-
     @Test
     public void testCreateCustomer() {
         controllerService.createCustomer();
