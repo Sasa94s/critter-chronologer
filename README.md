@@ -1,7 +1,8 @@
-# Critter Chronologer Project Starter
+# Critter Chronologer
 
-Critter Chronologer a Software as a Service application that provides a scheduling interface for a small business that takes care of animals. This Spring Boot project will allow users to create pets, owners, and employees, and then schedule events for employees to provide services for pets.
-
+Critter Chronologer a Software as a Service application that provides a scheduling interface for a small business that
+takes care of animals. This Spring Boot project allows users to create pets, owners, and employees, and then schedule
+events for employees to provide services for pets.
 
 ## Getting Started
 
@@ -13,15 +14,18 @@ Critter Chronologer a Software as a Service application that provides a scheduli
 * [MySQL Server 8](https://dev.mysql.com/downloads/mysql/) (or another standalone SQL instance)
 * [Postman](https://www.getpostman.com/downloads/)
 
-Part of this project involves configuring a Spring application to connect to an external data source. Before beginning this project, you must install a database to connect to. Here are [instructions for installing MySQL 8](https://dev.mysql.com/doc/refman/8.0/en/installing.html).
+### Database Setup
 
-You should install the Server and Connector/J, but it is also convenient to install the Documentation and Workbench.
+Before running this project, you must install a database to connect to. Here
+are [instructions for installing MySQL 8](https://dev.mysql.com/doc/refman/8.0/en/installing.html). You should install
+the Server and Connector/J, but it is also convenient to install the Documentation and Workbench. Alternately, you may
+wish to run MySQL in a docker container, using [these instructions](https://hub.docker.com/_/mysql/).
 
-Alternately, you may wish to run MySQL in a docker container, using [these instructions](https://hub.docker.com/_/mysql/).
+After installing the Server, you will need to create a user that your application will use to perform operations on the
+server. You should create a user that has all permissions on localhost using the sql command
+found [here](https://dev.mysql.com/doc/refman/8.0/en/creating-accounts.html).
 
-After installing the Server, you will need to create a user that your application will use to perform operations on the server. You should create a user that has all permissions on localhost using the sql command found [here](https://dev.mysql.com/doc/refman/8.0/en/creating-accounts.html).
-
-Another SQL database may be used if desired, but do not use the H2 in-memory database as your primary datasource.
+**Note:** H2 in-memory database is only used as a testing datasource. (No installation required)
 
 ### Installation
 
@@ -83,3 +87,5 @@ Each entry in this collection contains information in its `Body` tab if necessar
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
