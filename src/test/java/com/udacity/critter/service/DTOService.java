@@ -1,8 +1,11 @@
-package com.udacity.critter.utils;
+package com.udacity.critter.service;
 
 import com.google.common.collect.Sets;
 import com.udacity.critter.domain.dto.*;
 import com.udacity.critter.domain.enums.EmployeeSkill;
+import com.udacity.critter.utils.CollectionUtil;
+import com.udacity.critter.utils.DateUtil;
+import com.udacity.critter.utils.FakeUtil;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 @Service
-public class DTOUtil {
+public class DTOService {
     private static final int MAX_ID_BOUND = 100;
 
     private long getId() {

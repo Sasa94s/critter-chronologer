@@ -3,8 +3,8 @@ package com.udacity.critter;
 import com.google.common.collect.Sets;
 import com.udacity.critter.domain.dto.*;
 import com.udacity.critter.domain.enums.EmployeeSkill;
-import com.udacity.critter.utils.DBUtil;
-import com.udacity.critter.utils.DTOUtil;
+import com.udacity.critter.service.ControllerService;
+import com.udacity.critter.service.DTOService;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,10 +35,10 @@ import java.util.Set;
 public class CritterFunctionalTest {
 
     @Autowired
-    private DBUtil dbUtil;
+    private ControllerService controllerService;
 
     @Autowired
-    private DTOUtil dtoUtil;
+    private DTOService dtoService;
 
     @PersistenceContext
     private EntityManager em;
@@ -54,33 +54,33 @@ public class CritterFunctionalTest {
 
     @Test
     public void testCreateCustomer() {
-        dbUtil.createCustomer();
+        controllerService.createCustomer();
     }
 
     @Test
     public void testCreateEmployee() {
-        dbUtil.createEmployee();
+        controllerService.createEmployee();
     }
 
     @Test
     public void testAddPetsToCustomer() {
-        CustomerDTO newCustomer = dbUtil.createCustomer();
-        dbUtil.createPet(newCustomer);
+        CustomerDTO newCustomer = controllerService.createCustomer();
+        controllerService.createPet(newCustomer);
     }
 
     @Test
     public void testFindPetsByOwner() {
-        CustomerDTO newCustomer = dbUtil.createCustomer();
-        dbUtil.createPets(2, newCustomer);
+        CustomerDTO newCustomer = controllerService.createCustomer();
+        controllerService.createPets(2, newCustomer);
     }
 
     @Test
     public void testFindOwnerByPet() {
-        CustomerDTO newCustomer = dbUtil.createCustomer();
-        PetDTO newPet = dbUtil.createPet(newCustomer);
+        CustomerDTO newCustomer = controllerService.createCustomer();
+        PetDTO newPet = controllerService.createPet(newCustomer);
         flushAndClear();
 
-        CustomerDTO owner = dbUtil.findCustomerByPet(newPet);
+        CustomerDTO owner = controllerService.findCustomerByPet(newPet);
 
         Assertions.assertEquals(owner.getId(), newCustomer.getId());
         Assertions.assertEquals(owner.getPetIds().get(0), newPet.getId());
@@ -88,49 +88,49 @@ public class CritterFunctionalTest {
 
     @Test
     public void testChangeEmployeeAvailability() {
-        EmployeeDTO employeeDTO = dtoUtil.generateEmployee(null);
+        EmployeeDTO employeeDTO = dtoService.generateEmployee(null);
         Assertions.assertNotNull(employeeDTO.getDaysAvailable());
 
         final Set<DayOfWeek> daysAvailable = employeeDTO.getDaysAvailable();
         employeeDTO.setDaysAvailable(null);
-        EmployeeDTO newEmployee = dbUtil.saveEmployee(employeeDTO);
+        EmployeeDTO newEmployee = controllerService.saveEmployee(employeeDTO);
         Assertions.assertNull(newEmployee.getDaysAvailable());
 
-        dbUtil.updateEmployeeAvailability(daysAvailable, newEmployee);
-        EmployeeDTO retrievedEmployee = dbUtil.findEmployeeById(newEmployee);
+        controllerService.updateEmployeeAvailability(daysAvailable, newEmployee);
+        EmployeeDTO retrievedEmployee = controllerService.findEmployeeById(newEmployee);
         Assertions.assertEquals(daysAvailable, retrievedEmployee.getDaysAvailable());
     }
 
     @Test
     public void testFindEmployeesByServiceAndTime() {
-        List<EmployeeDTO> newEmployees = dbUtil.saveEmployees(null, null, null);
+        List<EmployeeDTO> newEmployees = controllerService.saveEmployees(null, null, null);
 
         //make a request that matches employee 1 or 2
-        EmployeeRequestDTO eRequest1 = dtoUtil.generateEmployeeRequestDTO(newEmployees.get(0));
-        EmployeeRequestDTO eRequest2 = dtoUtil.generateEmployeeRequestDTO(newEmployees.get(1));
+        EmployeeRequestDTO eRequest1 = dtoService.generateEmployeeRequestDTO(newEmployees.get(0));
+        EmployeeRequestDTO eRequest2 = dtoService.generateEmployeeRequestDTO(newEmployees.get(1));
 
-        Set<Long> eIds1 = dbUtil.findEmployeeIdsByService(eRequest1);
-        Set<Long> eIds1Expected = dtoUtil.getEmployeeIds(newEmployees, eRequest1);
+        Set<Long> eIds1 = controllerService.findEmployeeIdsByService(eRequest1);
+        Set<Long> eIds1Expected = dtoService.getEmployeeIds(newEmployees, eRequest1);
         Assertions.assertEquals(eIds1, eIds1Expected);
 
         //make a request that matches only employee 3
-        Set<Long> eIds2 = dbUtil.findEmployeeIdsByService(eRequest2);
-        Set<Long> eIds2Expected = dtoUtil.getEmployeeIds(newEmployees, eRequest2);
+        Set<Long> eIds2 = controllerService.findEmployeeIdsByService(eRequest2);
+        Set<Long> eIds2Expected = dtoService.getEmployeeIds(newEmployees, eRequest2);
         Assertions.assertEquals(eIds2, eIds2Expected);
     }
 
     @Test
     public void testSchedulePetsForServiceWithEmployee() {
-        EmployeeDTO employeeDTO = dbUtil.saveEmployees((Long) null).get(0);
-        CustomerDTO customerDTO = dbUtil.saveCustomers((Long) null).get(0);
-        PetDTO petDTO = dbUtil.savePets(new ImmutablePair<>(null, customerDTO.getId())).get(0);
+        EmployeeDTO employeeDTO = controllerService.saveEmployees((Long) null).get(0);
+        CustomerDTO customerDTO = controllerService.saveCustomers((Long) null).get(0);
+        PetDTO petDTO = controllerService.savePets(new ImmutablePair<>(null, customerDTO.getId())).get(0);
 
-        ScheduleDTO scheduleDTO = dtoUtil.generateSchedule(null,
+        ScheduleDTO scheduleDTO = dtoService.generateSchedule(null,
                 Collections.singleton(EmployeeSkill.FEEDING),
                 Collections.singletonList(petDTO.getId()),
                 Collections.singletonList(employeeDTO.getId()),
                 Collections.singletonList(customerDTO.getId()));
-        ScheduleDTO retrievedSchedule = dbUtil.saveSchedule(scheduleDTO);
+        ScheduleDTO retrievedSchedule = controllerService.saveSchedule(scheduleDTO);
 
         Assertions.assertEquals(scheduleDTO.getActivities(), retrievedSchedule.getActivities());
         Assertions.assertEquals(scheduleDTO.getDate(), retrievedSchedule.getDate());
@@ -140,10 +140,10 @@ public class CritterFunctionalTest {
 
     @Test
     public void testFindScheduleByEntities() {
-        ScheduleDTO schedule1 = dbUtil.autoSaveSchedule(1, 1, 2);
-        ScheduleDTO schedule2 = dbUtil.autoSaveSchedule(1, 3, 1);
+        ScheduleDTO schedule1 = controllerService.autoSaveSchedule(1, 1, 2);
+        ScheduleDTO schedule2 = controllerService.autoSaveSchedule(1, 3, 1);
         //add a third schedule that shares some employees and pets with the other schedules
-        ScheduleDTO schedule3 = dbUtil.saveSchedule(dtoUtil.generateSchedule(null,
+        ScheduleDTO schedule3 = controllerService.saveSchedule(dtoService.generateSchedule(null,
                 Sets.newHashSet(EmployeeSkill.SHAVING, EmployeeSkill.PETTING),
                 schedule2.getPetIds(),
                 schedule1.getEmployeeIds(),
@@ -156,31 +156,31 @@ public class CritterFunctionalTest {
          */
 
         // Employee 1 in is both schedule 1 and 3
-        List<ScheduleDTO> schedules1 = dbUtil.getSchedulesForEmployee(schedule1);
-        dbUtil.compareSchedules(schedule1, schedules1.get(0));
-        dbUtil.compareSchedules(schedule3, schedules1.get(1));
+        List<ScheduleDTO> schedules1 = controllerService.getSchedulesForEmployee(schedule1);
+        controllerService.compareSchedules(schedule1, schedules1.get(0));
+        controllerService.compareSchedules(schedule3, schedules1.get(1));
 
         // Employee 2 is only in Schedule 2
-        List<ScheduleDTO> schedules2 = dbUtil.getSchedulesForEmployee(schedule2);
-        dbUtil.compareSchedules(schedule2, schedules2.get(0));
+        List<ScheduleDTO> schedules2 = controllerService.getSchedulesForEmployee(schedule2);
+        controllerService.compareSchedules(schedule2, schedules2.get(0));
 
         // Pet 1 is only in Schedule 1
-        List<ScheduleDTO> schedulesPet1 = dbUtil.getSchedulesForPet(schedule1);
-        dbUtil.compareSchedules(schedule1, schedulesPet1.get(0));
+        List<ScheduleDTO> schedulesPet1 = controllerService.getSchedulesForPet(schedule1);
+        controllerService.compareSchedules(schedule1, schedulesPet1.get(0));
 
         // Pet from Schedule 2 is in both Schedules 2 and 3
-        List<ScheduleDTO> schedulesPet2 = dbUtil.getSchedulesForPet(schedule2);
-        dbUtil.compareSchedules(schedule2, schedulesPet2.get(0));
-        dbUtil.compareSchedules(schedule3, schedulesPet2.get(1));
+        List<ScheduleDTO> schedulesPet2 = controllerService.getSchedulesForPet(schedule2);
+        controllerService.compareSchedules(schedule2, schedulesPet2.get(0));
+        controllerService.compareSchedules(schedule3, schedulesPet2.get(1));
 
         // Owner of the first Pet will only be in Schedule 1
-        List<ScheduleDTO> scheduleCustomer1 = dbUtil.getSchedulesForCustomer(schedule1);
-        dbUtil.compareSchedules(schedule1, scheduleCustomer1.get(0));
+        List<ScheduleDTO> scheduleCustomer1 = controllerService.getSchedulesForCustomer(schedule1);
+        controllerService.compareSchedules(schedule1, scheduleCustomer1.get(0));
 
         // Owner of Pet from Schedule 2 will be in both Schedules 2 and 3
-        List<ScheduleDTO> scheduleCustomer2 = dbUtil.getSchedulesForCustomer(schedule2);
-        dbUtil.compareSchedules(schedule2, scheduleCustomer2.get(0));
-        dbUtil.compareSchedules(schedule3, scheduleCustomer2.get(1));
+        List<ScheduleDTO> scheduleCustomer2 = controllerService.getSchedulesForCustomer(schedule2);
+        controllerService.compareSchedules(schedule2, scheduleCustomer2.get(0));
+        controllerService.compareSchedules(schedule3, scheduleCustomer2.get(1));
     }
 
 }

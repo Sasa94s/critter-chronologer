@@ -1,4 +1,4 @@
-package com.udacity.critter.utils;
+package com.udacity.critter.service;
 
 import com.udacity.critter.controller.PetController;
 import com.udacity.critter.controller.ScheduleController;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
-public class DBUtil {
+public class ControllerService {
 
     @Autowired
     private UserController userController;
@@ -31,7 +31,7 @@ public class DBUtil {
     private ScheduleController scheduleController;
 
     @Autowired
-    private DTOUtil dtoUtil;
+    private DTOService dtoService;
 
     @PersistenceContext
     private EntityManager em;
@@ -42,7 +42,7 @@ public class DBUtil {
     }
 
     public CustomerDTO createCustomer() {
-        CustomerDTO generatedCustomer = dtoUtil.generateCustomer(null);
+        CustomerDTO generatedCustomer = dtoService.generateCustomer(null);
         CustomerDTO newCustomer = userController.saveCustomer(generatedCustomer);
         CustomerDTO retrievedCustomer = userController.getAllCustomers().get(0);
         Assertions.assertEquals(newCustomer.getName(), generatedCustomer.getName());
@@ -53,7 +53,7 @@ public class DBUtil {
     }
 
     public EmployeeDTO createEmployee() {
-        EmployeeDTO generatedEmployee = dtoUtil.generateEmployee(null);
+        EmployeeDTO generatedEmployee = dtoService.generateEmployee(null);
         EmployeeDTO newEmployee = userController.saveEmployee(generatedEmployee);
         EmployeeDTO retrievedEmployee = userController.getEmployee(newEmployee.getId());
         Assertions.assertEquals(generatedEmployee.getSkills(), newEmployee.getSkills());
@@ -64,7 +64,7 @@ public class DBUtil {
     }
 
     public PetDTO createPet(CustomerDTO customerDTO) {
-        PetDTO petDTO = dtoUtil.generatePet(null, customerDTO.getId());
+        PetDTO petDTO = dtoService.generatePet(null, customerDTO.getId());
         PetDTO newPet = petController.savePet(petDTO);
 
         //make sure pet contains customer id
@@ -89,7 +89,7 @@ public class DBUtil {
     }
 
     public void createPets(int count, CustomerDTO customerDTO) {
-        List<PetDTO> petDTOs = dtoUtil.batchPet(
+        List<PetDTO> petDTOs = dtoService.batchPet(
                 IntStream.range(0, count)
                         .mapToObj(i -> new ImmutablePair<>((Long) null, customerDTO.getId()))
                         .toArray(Pair[]::new));
@@ -123,19 +123,19 @@ public class DBUtil {
     }
 
     public List<EmployeeDTO> saveEmployees(Long... ids) {
-        return dtoUtil.batchEmployee(ids).stream()
+        return dtoService.batchEmployee(ids).stream()
                 .map(employeeDTO -> userController.saveEmployee(employeeDTO))
                 .collect(Collectors.toList());
     }
 
     public List<CustomerDTO> saveCustomers(Long... ids) {
-        return dtoUtil.batchCustomer(ids).stream()
+        return dtoService.batchCustomer(ids).stream()
                 .map(customerDTO -> userController.saveCustomer(customerDTO))
                 .collect(Collectors.toList());
     }
 
     public List<PetDTO> savePets(Pair<Long, Long>... ids) {
-        return dtoUtil.batchPet(ids).stream()
+        return dtoService.batchPet(ids).stream()
                 .map(petDTO -> petController.savePet(petDTO))
                 .collect(Collectors.toList());
     }
@@ -145,19 +145,19 @@ public class DBUtil {
     }
 
     public List<PetDTO> autoSavePets(int petCount, List<CustomerDTO> customers) {
-        return dtoUtil.batchPets(petCount, customers).stream()
+        return dtoService.batchPets(petCount, customers).stream()
                 .map(pet -> petController.savePet(pet))
                 .collect(Collectors.toList());
     }
 
     public List<EmployeeDTO> autoSaveEmployees(int employeeCount) {
-        return dtoUtil.batchEmployees(employeeCount).stream()
+        return dtoService.batchEmployees(employeeCount).stream()
                 .map(employee -> userController.saveEmployee(employee))
                 .collect(Collectors.toList());
     }
 
     public List<CustomerDTO> autoSaveCustomers(int customerCount) {
-        return dtoUtil.batchCustomers(customerCount).stream()
+        return dtoService.batchCustomers(customerCount).stream()
                 .map(customer -> userController.saveCustomer(customer))
                 .collect(Collectors.toList());
     }
@@ -167,7 +167,7 @@ public class DBUtil {
         List<EmployeeDTO> employees = autoSaveEmployees(employeeCount);
         List<PetDTO> pets = autoSavePets(petCount, customers);
 
-        return scheduleController.createSchedule(dtoUtil.generateSchedule(
+        return scheduleController.createSchedule(dtoService.generateSchedule(
                 null,
                 pets.stream().map(PetDTO::getId).distinct().collect(Collectors.toList()),
                 employees.stream().map(UserDTO::getId).distinct().collect(Collectors.toList()),
